@@ -1,0 +1,11 @@
+# Shell scripts must keep LF line endings to run under bash
+*.sh text eol=lf
+
+# Common text files
+*.md text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.ts text eol=lf
+*.html text eol=lf
+*.dot text eol=lf

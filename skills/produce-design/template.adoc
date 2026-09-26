@@ -1,0 +1,115 @@
+= <Ticket> — <Title>
+:toc:
+:sectnums:
+
+// Section order and conditions: design-doc.md. Leave out any section whose condition does not hold.
+
+== Purpose and scope
+
+<What it is for, who it is for, what is in, what is out.>
+
+== Requirements and terms
+
+=== Terms
+
+<Term>:: <definition>
+
+=== Requirements
+
+* *R-01* — <one testable statement>
+* *R-02* — <one testable statement>
+
+== Approach
+
+<The chosen option and why it beat the alternatives.>
+
+== UI
+
+Approved mockup: <link>[<tool> mockup]
+
+. <Flow name>: <step> → <step> → <step>
+
+== Architecture
+
+[plantuml, architecture, svg]
+----
+@startuml
+component "<Component>" as A
+database "<Store>" as DB
+A --> DB
+@enduml
+----
+
+== Data model
+
+[plantuml, data-model, svg]
+----
+@startuml
+class <Entity> {
+  <field> : <type>
+}
+@enduml
+----
+
+== Flows
+
+=== <Flow name>
+
+[plantuml, flow-<name>, svg]
+----
+@startuml
+participant "<A>" as A
+participant "<B>" as B
+A -> B : <request>
+alt <failure>
+  B --> A : <error>
+else ok
+  B --> A : <result>
+end
+@enduml
+----
+
+== States
+
+=== <Entity>
+
+[plantuml, states-<entity>, svg]
+----
+@startuml
+[*] --> <State>
+<State> --> <State> : <trigger>
+@enduml
+----
+
+== Compatibility and migration
+
+== Error handling
+
+== Telemetry
+
+=== Logs
+
+[cols="2,1,3"]
+|===
+|Event |Level |Fields
+
+|<event.name> |info |<field>, <field>
+|===
+
+=== Traces
+
+=== Metrics
+
+== Test cases
+
+=== UAT
+
+* *TC-01* — As a <role>, when <action>, then <observable result>. (R-01)
+
+=== E2E
+
+=== SIT
+
+// Master document of a split design: keep Purpose and scope, Requirements and terms,
+// Approach, UI and Test cases here, and pull each part in where its sections belong:
+// include::<part-file>.adoc[leveloffset=+1]
