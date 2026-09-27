@@ -46,7 +46,9 @@ What it is for, who it is for, what is in and what is out.
 
 ## 3. Approach
 
-The chosen option and why it beat the alternatives.
+The chosen approach and why: the alternatives the design principle
+(high cohesion, low coupling) ruled out, or, when several survived, why
+this one won.
 
 ## 4. UI
 

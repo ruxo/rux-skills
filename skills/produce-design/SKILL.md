@@ -75,6 +75,8 @@ artifact, never the approval.
 | "They answered my question, so the section is settled" | An answer is feedback, not approval. Re-present the section and ask again. |
 | "They said yes and originally asked me to build it, so I'll start" | The yes approves the design. Send the hand-off message; building is their next request. |
 | "The UI part is small — I'll describe it in words" | Any UI part gets a mockup script. A small UI means a short script. |
+| "Three options look thorough — let them pick" | Apply the design principle first. Offer only the options that survive it and still compete; if one survives, present it. |
+| "There are only two options — a paragraph is quicker than a table" | Any design choice gets the Option / Pros / Cons table (see Showing choices). |
 | "I'll mock up the UI once the architecture is settled" | The mockup comes first: its flows tell you what the architecture must serve. |
 | "I'll draw the mockup myself" | A designer agent draws it from your script; your human partner runs it. |
 | "The design sections are approved, so I'll write the document" | Test cases come next, and they are an approval gate of their own. |
@@ -104,7 +106,7 @@ your path and complete them in order.
 1. **Explore project context** — check files, docs, recent commits
 2. **Mock up the UI** — if the design has a UI part: write the mockup script and get the mockup approved before any other design work (see UI mockups)
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation
+4. **Settle the approach** — apply the design principle first; present the one approach that survives, or a choice table only when several still compete (see Exploring approaches)
 5. **Present design sections** — one per message, in order (see Design sections); each stays open until your human partner explicitly approves it (see Closing a section)
 6. **Present test cases** — UAT, E2E and SIT, one line each, approved like a section (see test-cases.md)
 7. **Write design doc** — save it to disk in the project's design-doc location and format (see After the Design)
@@ -126,7 +128,7 @@ digraph produce_design {
     "Explore project context" [shape=box];
     "Mock up the UI, if any" [shape=box];
     "Ask clarifying questions" [shape=box];
-    "Propose 2-3 approaches" [shape=box];
+    "Settle the approach" [shape=box];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
     "Present test cases" [shape=box];
@@ -149,8 +151,8 @@ digraph produce_design {
     "Hidden complexity? Upgrade path" -> "Classify: spike / bounded / architectural";
     "Explore project context" -> "Mock up the UI, if any";
     "Mock up the UI, if any" -> "Ask clarifying questions";
-    "Ask clarifying questions" -> "Propose 2-3 approaches";
-    "Propose 2-3 approaches" -> "Present design sections";
+    "Ask clarifying questions" -> "Settle the approach";
+    "Settle the approach" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
     "User approves design?" -> "Present test cases" [label="yes, all sections"];
@@ -191,7 +193,7 @@ questions plus a short in-chat design is the whole process.
 - Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then design the first sub-project through the normal design flow. Each sub-project gets its own design and spec.
 - For appropriately-scoped projects, ask questions one at a time to refine the idea
-- Prefer multiple choice questions when possible, but open-ended is fine too
+- Prefer multiple choice questions when possible, but open-ended is fine too; when the options are design choices, show them as a table (see Showing choices)
 - Only one question per message - if a topic needs more exploration, break it into multiple questions
 - Focus on understanding: purpose, constraints, success criteria
 
@@ -235,12 +237,61 @@ The script contains, in order:
 For a bounded change, the screens are only the changed ones, each named
 with the existing screen it sits in.
 
+**Design principle — high cohesion, low coupling:**
+
+This is the rule every design decision starts from, on every path.
+
+- **High cohesion.** Each unit does one thing. What changes together
+  lives together; what changes for different reasons lives apart.
+- **Low coupling.** Units depend on each other only through small,
+  explicit interfaces — never on another unit's internals, stored data
+  or timing.
+- For each unit you can answer: what does it do, how do you use it,
+  what does it depend on? Can its internals change without breaking the
+  code that uses it? If not, the boundaries need work.
+- Smaller, well-bounded units are also easier for you to work with: you
+  reason better about code you can hold in context at once. A file that
+  grows large is often doing too much.
+
+Other principles or non-functional requirements (for example,
+simplicity or performance) can outweigh it, but only as a named
+trade-off: say what cohesion or
+coupling you give up and why, as a con in the choice table or a line in
+the design section.
+
 **Exploring approaches:**
 
-- Propose 2-3 different approaches with trade-offs
-- Present options conversationally with your recommendation and reasoning
-- Lead with your recommended option and explain why
+- Apply the design principle before you show anything. Drop every
+  approach it clearly rules out.
+- One approach survives: present it, with a line on what the principle
+  ruled out and why. There is no choice to offer.
+- Several survive with pros and cons that really compete: show them as
+  a choice (see Showing choices).
 - YAGNI ruthlessly - remove unnecessary features from every approach and design
+
+**Showing choices:**
+
+Offer options only when a design decision is still open after the
+design principle: every option you show must survive it, and none may
+be clearly better than the rest. Then — for approaches, a gap in a
+section, a choice inside a flow or data model — show them as a table
+with the columns Option, Pros and Cons. Put your recommended option
+first, marked "(recommended)". Pros and Cons are points, not prose: a
+few bullets each, every bullet a short phrase naming one concrete
+benefit or cost for this project. Any bullet form that renders works —
+an HTML list (`<ul><li>…</li></ul>`), or `•` or `*` at the start of
+each point with the points on separate lines (`<br>` between them). A
+sentence, or several points run together in one line, is not a bullet.
+After the table, say in a sentence or two why you recommend the first
+option.
+
+| Option | Pros | Cons |
+|---|---|---|
+| **Poll the service every minute** (recommended) | • No change to the service<br>• A missed poll recovers next time | • Up to a minute of delay<br>• Requests even when nothing changed |
+| **Service pushes a webhook** | • Changes arrive at once<br>• No idle traffic | • New endpoint and retry logic in the service<br>• A missed webhook is lost |
+
+A question about what your human partner wants — who uses it, what
+counts as done — has no pros and cons; ask it plainly.
 
 **Presenting the design:**
 
@@ -312,13 +363,6 @@ The next section does not appear in that message. When they answer your question
 
 This applies to every approval gate in this skill: the mockup, each design section, the test cases, the bounded path's short design, and the written design doc.
 
-**Design for isolation and clarity:**
-
-- Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
-- For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
-- Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
-- Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
-
 **Working in existing codebases:**
 
 - Explore the current structure before proposing changes. Follow existing patterns.
@@ -389,6 +433,7 @@ After writing the design doc, look at it with fresh eyes:
 5. **Diagram check:** Does every flow have a sequence diagram, and every conditional section appear exactly when its condition holds? Are all diagrams PlantUML (Mermaid in a GitHub issue)?
 6. **Test-case check:** Does every requirement have a case, and every case cite a requirement? Is each case one line, at one level only?
 7. **Section check:** Is every section one of those in design-doc.md? Remove any that is not.
+8. **Principle check:** Does any unit mix unrelated responsibilities, or depend on another unit's internals, data or timing? Fix it, or name the trade-off and why.
 
 Fix any issues inline. No need to re-review — just fix and move on.
 

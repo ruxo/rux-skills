@@ -91,8 +91,13 @@ Plan 0 is contract, not feature: no behavior, no business logic. It
 compiles and leaves existing tests passing. Its contract files are
 given in full; moved tests are listed as `from → to`.
 
-Builder 1 runs plan 0, commits it, then continues with plan 1. Builders
-2 to N start from plan 0's commit.
+One builder runs plan 0 alone, commits it and stops — builders 1 to N
+start from that commit, each in its own working copy (a branch or
+worktree) your human partner sets up.
+
+That is the one commit a builder makes. Otherwise builders leave git
+alone: no staging, no commits, unless the work cannot go on without
+one. Staging and committing are your human partner's job.
 
 ## 4. Split the work
 
@@ -119,10 +124,11 @@ Split the rest into one plan per builder:
   shared by several code projects, never give it to one builder or
   split it between builders. Plan 0 creates a test project for each
   code project the build touches, empty and building, and adds it to
-  the solution; builders' new tests go there. Plan 0 also moves, unchanged, the shared project's
-  tests that the assigned work needs — tests of behavior a builder
-  changes, or that a builder must update — into the new test project
-  for their code project; they belong there anyway. A helper that
+  the solution; builders' new tests go there. Plan 0 also moves,
+  unchanged, the shared project's tests that the assigned work needs —
+  tests of behavior a builder changes, or that a builder must update —
+  into the new test project for their code project; they belong there
+  anyway. A helper that
   tests left behind still use stays put, and the new test project
   references it. Every other test stays where it is: this is not a
   test migration.
@@ -165,8 +171,8 @@ Each builder plan contains, in order:
 
 1. **Header** — title, the design doc's path or issue URL, the goal in
    one sentence, and "Start from the commit that contains plan 0."
-2. **How to work** — this text, with the branch name filled in:
-   > Work alone until this plan is done. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Work on branch `<branch>` and commit after each task. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner.
+2. **How to work** — this text, word for word:
+   > Work alone until this plan is done. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Leave git alone: don't stage or commit unless the work cannot go on without it; your human partner commits your work. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner.
 3. **Before you start** — only when section 5 gives this plan steps.
 4. **Files you own** — every file this plan creates or changes.
 5. **Tasks**, in build order. Each task has:
@@ -180,7 +186,9 @@ Each builder plan contains, in order:
    instruction file.
 
 Plan 0 has the same header without the start line, then How to work
-without the test-first sentence (plan 0 adds no behavior), then
+with two changes: drop the test-first sentence (plan 0 adds no
+behavior), and replace the "Leave git alone" sentence with "When plan 0
+is done, commit it: builders 1 to N start from that commit." Then
 **Files you own** — every file it creates, changes or moves — then the
 **contract** in full, then **Done when**.
 
@@ -198,12 +206,14 @@ without the test-first sentence (plan 0 adds no behavior), then
 6. **No design decisions:** every behavior traces to the design doc.
 7. **No placeholders:** no "TBD", "handle errors appropriately",
    "similar to task N".
+8. **Git:** only plan 0 tells its builder to commit; no task in plans 1
+   to N stages or commits.
 
 Fix issues inline.
 
 ## 8. Hand off
 
-> "Plans written: `<plan 0 path>` … `<plan N path>`. Builder 1 runs plan 0, then plan 1; builders 2 to N start from plan 0's commit. Plans 1 to N merge in any order. Please review them."
+> "Plans written: `<plan 0 path>` … `<plan N path>`. Run plan 0 with one builder; it commits plan 0. Then start builders 1 to N from that commit, each in its own branch or worktree. Plans 1 to N merge in any order. Please review them."
 
 Add the reasons section 4 asks for: why there are fewer plans than
 builders, or why two builders share a project.
@@ -215,6 +225,7 @@ stop. Building starts when your human partner starts the builders.
 
 | Mistake | Fix |
 |---|---|
+| A plan tells the builder to commit after each task | Builders leave staging and commits to your human partner; only plan 0 ends with a commit |
 | Two plans each add a line to the same registration file | That edit is a hotspot: it goes in plan 0 |
 | A task waits for a service another builder writes | Put its interface in plan 0; test against a fake |
 | A final "integration" or "end-to-end" task in a builder plan | Cross-builder checks are the design doc's test cases, run by your human partner |
