@@ -7,6 +7,8 @@ document.
 
 All diagrams are PlantUML. In chat, put them in a ` ```plantuml ` block;
 in the document, use the block syntax of its format (see the templates).
+In both, colour marks what the design changes — `#LightGreen` new,
+`#Yellow` changed, `#Salmon` removed (see Diagram style in SKILL.md).
 
 ## The document, in order
 
@@ -42,7 +44,8 @@ What it is for, who it is for, what is in and what is out.
   When a later section settles another testable behavior — what
   existing data reads as, what a consumer can still rely on — present it
   with a new requirement number in that section, and the document lists
-  it here.
+  it here. A new number is the next unused one; a removed number is
+  never reused.
 
 ## 3. Approach
 

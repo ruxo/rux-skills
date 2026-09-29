@@ -72,16 +72,21 @@ artifact, never the approval.
 | "It grew, but I'm almost done — no need to re-classify" | Hidden complexity upgrades the path mid-task. Stop and say so. |
 | "They approved the spike, so the follow-up change is approved too" | Each task gets its own classification and its own approval. |
 | "They only changed one detail — the rest stands, so I'll move on" | A correction approves nothing. Give your position, re-present the section, ask for approval. |
-| "They answered my question, so the section is settled" | An answer is feedback, not approval. Re-present the section and ask again. |
+| "They answered my question about the section I showed, so it's settled" | An answer about a shown section is feedback, not approval. Re-present the section and ask again. (Answers to a section's pre-questions are inputs: they shape its first showing.) |
 | "They said yes and originally asked me to build it, so I'll start" | The yes approves the design. Send the hand-off message; building is their next request. |
 | "The UI part is small — I'll describe it in words" | Any UI part gets a mockup script. A small UI means a short script. |
 | "Three options look thorough — let them pick" | Apply the design principle first. Offer only the options that survive it and still compete; if one survives, present it. |
-| "There are only two options — a paragraph is quicker than a table" | Any design choice gets the Option / Pros / Cons table (see Showing choices). |
+| "No person can see replay truncate the file, so it's SIT" | SIT needs a second deployed system on the other side. Inside one process it's the builder's unit test — not a test case. |
+| "One table with every failure is the complete picture" | Past seven rows, group by the component, flow or actor each row belongs to, each group under its own heading (see Long lists). |
+| "I'll ask the question and show the section built on my recommendation, to save a round trip" | A section built on an open question is a guess. Ask, wait for the answer, then present the section. |
+| "They liked the blueprint theme last time, so I'll apply it" | Chat diagrams take no theme. Colour marks only what is new (`#LightGreen`), changed (`#Yellow`) or removed (`#Salmon`). |
+| "There are only two options — a paragraph is quicker than a table" | Any open choice gets the Option / Pros / Cons table (see Showing choices). |
 | "I'll mock up the UI once the architecture is settled" | The mockup comes first: its flows tell you what the architecture must serve. |
 | "I'll draw the mockup myself" | A designer agent draws it from your script; your human partner runs it. |
 | "The design sections are approved, so I'll write the document" | Test cases come next, and they are an approval gate of their own. |
 | "I'll leave this gap in the document for the builders to settle" | Builders work apart and would settle it differently. Ask your human partner now. |
 | "A complete design shows every diagram type" | Each conditional section appears only when its condition holds (design-doc.md). |
+
 ## Checklist
 
 Classify first, announce the path, then create a task for each item on
@@ -107,7 +112,7 @@ your path and complete them in order.
 2. **Mock up the UI** — if the design has a UI part: write the mockup script and get the mockup approved before any other design work (see UI mockups)
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Settle the approach** — apply the design principle first; present the one approach that survives, or a choice table only when several still compete (see Exploring approaches)
-5. **Present design sections** — one per message, in order (see Design sections); each stays open until your human partner explicitly approves it (see Closing a section)
+5. **Present design sections** — each section in its own message, in order (see Design sections); each stays open until your human partner explicitly approves it (see Closing a section)
 6. **Present test cases** — UAT, E2E and SIT, one line each, approved like a section (see test-cases.md)
 7. **Write design doc** — save it to disk in the project's design-doc location and format (see After the Design)
 8. **Doc self-review** — quick inline check (see below)
@@ -194,7 +199,7 @@ questions plus a short in-chat design is the whole process.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then design the first sub-project through the normal design flow. Each sub-project gets its own design and spec.
 - For appropriately-scoped projects, ask questions one at a time to refine the idea
 - Prefer multiple choice questions when possible, but open-ended is fine too; when the options are design choices, show them as a table (see Showing choices)
-- Only one question per message - if a topic needs more exploration, break it into multiple questions
+- Only one question per message while understanding the idea - if a topic needs more exploration, break it into multiple questions (a design section's gaps are different: they go together, see Design sections)
 - Focus on understanding: purpose, constraints, success criteria
 
 **UI mockups:**
@@ -255,9 +260,8 @@ This is the rule every design decision starts from, on every path.
 
 Other principles or non-functional requirements (for example,
 simplicity or performance) can outweigh it, but only as a named
-trade-off: say what cohesion or
-coupling you give up and why, as a con in the choice table or a line in
-the design section.
+trade-off: say what cohesion or coupling you give up and why, as a con
+in the choice table or a line in the design section.
 
 **Exploring approaches:**
 
@@ -277,32 +281,52 @@ be clearly better than the rest. Then — for approaches, a gap in a
 section, a choice inside a flow or data model — show them as a table
 with the columns Option, Pros and Cons. Put your recommended option
 first, marked "(recommended)". Pros and Cons are points, not prose: a
-few bullets each, every bullet a short phrase naming one concrete
-benefit or cost for this project. Any bullet form that renders works —
-an HTML list (`<ul><li>…</li></ul>`), or `•` or `*` at the start of
-each point with the points on separate lines (`<br>` between them). A
-sentence, or several points run together in one line, is not a bullet.
+few bullets each, heaviest first, every bullet a short phrase naming
+one concrete benefit or cost for this project. Any bullet form that
+renders works — an HTML list (`<ul><li>…</li></ul>`), or `•` or `*` at
+the start of each point with the points on separate lines (`<br>`
+between them). A sentence, or several points run together in one line,
+is not a bullet.
 After the table, say in a sentence or two why you recommend the first
-option.
+option, name the trade-off it accepts — its heaviest con — and say what
+would make another option win instead. If nothing would, the options
+do not compete: present the first alone (see Exploring approaches).
 
 | Option | Pros | Cons |
 |---|---|---|
 | **Poll the service every minute** (recommended) | • No change to the service<br>• A missed poll recovers next time | • Up to a minute of delay<br>• Requests even when nothing changed |
 | **Service pushes a webhook** | • Changes arrive at once<br>• No idle traffic | • New endpoint and retry logic in the service<br>• A missed webhook is lost |
 
+> Polling is recommended: nothing in the service changes. It accepts up
+> to a minute of delay; a webhook wins only if changes must show within
+> seconds.
+
 A question about what your human partner wants — who uses it, what
 counts as done — has no pros and cons; ask it plainly.
+
+**Long lists:**
+
+A list or table with more than seven items is grouped before it is
+shown, in chat and in the doc: one group per component, flow or actor
+the design already names (the journal, the scheduler, the `refresh`
+route), each under its own heading, items in the order a reader would
+meet them. A reviewer approves a group at a time; a flat list of thirty
+rows in arbitrary order cannot be reviewed at all. Two exceptions: a
+list whose order is the content — flow steps, migration steps, a
+script's flows — stays in order, ungrouped; and when the design's names
+would not give at least two groups of two or more, the list stays flat
+(Terms stays flat and alphabetical).
 
 **Presenting the design:**
 
 - Once you believe you understand what you're building, present the design
 - Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
-- Ask after each section whether it looks right so far
+- End each section with its approval question (see Closing a section)
 - Be ready to go back and clarify if something doesn't make sense
 
 **Design sections (architectural path):**
 
-Present these in order, one per message, each with its diagram.
+Present these in order, each in its own message, each with its diagram.
 design-doc.md says what each contains and how to draw it.
 
 1. **Requirements and terms** — always
@@ -316,7 +340,18 @@ design-doc.md says what each contains and how to draw it.
 
 Skip a section whose condition does not hold. When a gap turns up —
 something the design must decide but nobody has — ask your human partner
-about it in the section where it belongs.
+before presenting the section it belongs to; a gap for a later section
+waits for that section. A message holds either the section's open
+questions or the section, never both: the section is written from the
+answers, so a section shown beside its own question is a guess that has
+to be redrawn. Ask all of a section's questions in one message — a
+choice table for each design choice, a plain question for a preference
+(see Showing choices) — wait, then present. A gap with one surviving
+option is not a question: decide it and state it in the section. The
+answers are inputs, not feedback: the section that follows is its first
+showing, and Closing a section applies from there. When feedback on a
+shown section opens gaps, ask them the same way, together, before the
+revised section.
 
 After the last section is approved, present the test cases (see
 test-cases.md).
@@ -346,6 +381,36 @@ end
 - Keep prose for what the diagram can't show: reasons, constraints, trade-offs.
 - This holds wherever you describe a flow: design sections, approaches, the bounded path's short design, and the written design doc.
 
+**Diagram style:**
+
+- In chat, no theme and no skinparam — not even one your human partner
+  liked before. The default look renders the same everywhere.
+- In chat and in the doc, colour only what the design changes, so the
+  change is visible at a glance: `#LightGreen` for anything new,
+  `#Yellow` for anything changed, `#Salmon` for anything removed —
+  those three names, on boxes only: participants, components, classes
+  and states. Everything unchanged stays uncoloured; when everything is
+  new (a greenfield design), colour nothing.
+- Arrows and messages take no colour in any diagram — a pale line
+  disappears on white. Mark a new, changed or removed one with a label
+  or a note: "(new)", "(changed)", "(removed)".
+- This holds for every diagram type — component, class, sequence,
+  state. In Mermaid (a GitHub issue), use the same three colours in
+  whatever way that diagram type allows, and a note where it allows
+  none.
+
+```plantuml
+@startuml
+component "Orders API" as A
+component "Tag service" as T #LightGreen
+database "Orders DB" as D #Yellow
+component "Legacy sync" as L #Salmon
+A --> T : (new)
+T --> D
+A --> L : (removed)
+@enduml
+```
+
 **Closing a section — only an approval closes it:**
 
 Your human partner's reply to a section is either an approval or feedback.
@@ -355,7 +420,7 @@ Your human partner's reply to a section is either an approval or feedback.
 
 When the reply is feedback, your next message has these parts, in order:
 
-1. **Your position** — say you agree and why, in a sentence or two; or say you disagree or see a risk, and why. If the feedback is unclear, ask your one question here and end the message.
+1. **Your position** — say you agree and why, in a sentence or two; or say you disagree or see a risk, and why. If the feedback is unclear, ask what it means here and end the message; if it opens gaps, ask them together and end the message (see Design sections).
 2. **The revised section, in full.**
 3. **The approval question** — "Is section N approved?"
 
@@ -377,12 +442,11 @@ Find where design docs go for this project:
 
 1. Look for a design-doc location already recorded for this project: first your harness's persistent memory, then the project instruction file (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`).
 2. If found, use it without asking.
-3. If not found, ask your human partner where design docs go for this project: a folder, or GitHub issues in a repository.
+3. If not found, ask your human partner where design docs go for this project.
 4. Record the answer: in your harness's per-project memory if it has one; otherwise add a line to the project instruction file.
 
-**Format.** When design docs go to GitHub issues, see GitHub issue
-below. For a folder, look for a `.obsidian` folder in it or any folder
-above it:
+**Format.** For a folder, look for a `.obsidian` folder in it or any
+folder above it:
 
 - **Found** — the folder is in an Obsidian vault. Write Obsidian
   Markdown (`.md`), following template-obsidian.md.
@@ -390,15 +454,17 @@ above it:
 
 Diagrams are PlantUML in both.
 
-**GitHub issue.** GitHub does not render PlantUML, so an issue uses
-Mermaid. Follow template-obsidian.md's sections in GitHub Markdown: draw
-each diagram in a ` ```mermaid ` block (a component diagram becomes a
-`flowchart`), and write comments as `<!-- -->`. Write the body to a file
-in your scratchpad or temp directory; that file is what the self-review
-and your human partner's review check. Once they approve it, create the
-issue with `gh issue create --body-file <file>`. A split design becomes
-one issue per part: create the parts first, then the master issue
-linking them by number.
+**GitHub issue.** When your human partner tells you the design goes to
+a GitHub issue — never offer it yourself — the issue uses Mermaid,
+since GitHub does not render PlantUML. Follow template-obsidian.md's
+sections in GitHub Markdown: draw each diagram in a ` ```mermaid `
+block (a component diagram becomes a `flowchart`), and write comments
+as `<!-- -->`. Write the body to a file in your scratchpad or temp
+directory; that file is what the self-review and your human partner's
+review check. Once they approve it, create the issue with
+`gh issue create --body-file <file>`. A split design becomes one issue
+per part: create the parts first, then the master issue linking them by
+number.
 
 **File name** (folder docs). Every file name starts with today's date, `YYYY-MM-DD-`,
 followed by a name you choose — for example
@@ -430,8 +496,8 @@ After writing the design doc, look at it with fresh eyes:
 2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
 3. **Scope check:** Is this focused enough to build as one piece, or does it need decomposition?
 4. **Gap check:** Is anything the builders need left undecided, or could a requirement be read two ways? Ask your human partner and write in their answer; never leave it for the builders.
-5. **Diagram check:** Does every flow have a sequence diagram, and every conditional section appear exactly when its condition holds? Are all diagrams PlantUML (Mermaid in a GitHub issue)?
-6. **Test-case check:** Does every requirement have a case, and every case cite a requirement? Is each case one line, at one level only?
+5. **Diagram check:** Does every flow have a sequence diagram, and every conditional section appear exactly when its condition holds? Are all diagrams PlantUML (Mermaid in a GitHub issue), with boxes coloured only where the design changes — `#LightGreen` new, `#Yellow` changed, `#Salmon` removed — and arrows uncoloured, their changes labelled "(new)", "(changed)", "(removed)"?
+6. **Test-case check:** Does every requirement have a case, and every case cite a requirement? Is each case one line, at one level only? Does any case run inside one process — a builder's unit test in SIT's clothes?
 7. **Section check:** Is every section one of those in design-doc.md? Remove any that is not.
 8. **Principle check:** Does any unit mix unrelated responsibilities, or depend on another unit's internals, data or timing? Fix it, or name the trade-off and why.
 

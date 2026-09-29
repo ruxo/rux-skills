@@ -9,7 +9,7 @@ Derived from [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent
 | Skill | Use when |
 |---|---|
 | `produce-design` | Before any creative work — explores intent, requirements, and design before implementation; architectural designs get a design doc with diagrams and UAT, E2E, and SIT test cases |
-| `writing-builder-plans` | An approved design doc is ready to be built by several builders in parallel — writes contract plans plus one plan per builder, ordered by dependency so parallel plans share nothing and none leaves anything broken |
+| `writing-builder-plans` | An approved design doc is ready to be built by several builders in parallel — writes contract plans and build plans, split where work can run side by side and ordered by dependency, so parallel plans share nothing and none leaves anything broken |
 | `test-driven-development` | Implementing any feature or bugfix, before writing implementation code |
 | `systematic-debugging` | Any bug, test failure, or unexpected behavior, before proposing fixes |
 | `verification-before-completion` | About to claim work is complete, fixed, or passing |
