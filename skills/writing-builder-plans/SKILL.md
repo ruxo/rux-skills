@@ -8,11 +8,11 @@ description: Use when an approved design document is ready to be built by severa
 ## Overview
 
 Turn an approved design document into plans for builders who work in
-parallel, each alone in their own session, until done, without talking
-to each other. The plans make that possible with one rule: **a plan
-depends only on plans it starts after, and plans that can run at the
-same time touch nothing in common** — no file, no project. Two plans
-can run at the same time when neither reaches the other through Starts
+parallel, each alone in their own session and their own worktree, until
+done, without talking to each other. The plans make that possible with
+one rule: **a plan depends only on plans it starts after, and plans
+that can run at the same time touch no file in common**. Two plans can
+run at the same time when neither reaches the other through Starts
 after. Contracts that plans share go in contract plans that the plans
 using them start after.
 
@@ -76,9 +76,10 @@ back with `gh issue edit <n> --body-file <file>`.
 List every file to be created or changed, and every generated artifact.
 Mark the **hotspots** — files that more than one part of the work would
 touch: service or DI registration, route tables, the exported or
-generated API schema, package manifests and lockfiles, solution or
-workspace files that list the projects, shared config, shared test
-fixtures. Note which project each file belongs to.
+generated API schema, package manifests and lockfiles, module index
+files (`lib.rs`, `mod.rs`, `index.ts`), solution or workspace files
+that list the projects, shared config, shared test fixtures. Note which
+project each file belongs to.
 
 ## 3. Contract plans
 
@@ -106,28 +107,27 @@ contract it does not use; contracts always used together go in one.
 Contract plans follow the same rules as every other plan.
 
 **Order follows the dependencies, not phases.** A plan builds on
-another when it uses that plan's contract or code, or touches a file or
-project that plan touches. Each plan lists under **Starts after** the
-plans it builds on, unless it already reaches them through one it
-lists; a plan that builds on none starts at once. Every plan listed
-under Starts after has a lower number (`0a` < `0b` < … < `1` < `2`), so
-when two plans touch the same file or project, the lower number goes
-first, and a contract plan never waits for a build plan.
+another when it uses that plan's contract or code, or touches a file
+that plan touches. Each plan lists under **Starts after** the plans it
+builds on, unless it already reaches them through one it lists; a plan
+that builds on none starts at once. Every plan listed under Starts
+after has a lower number (`0a` < `0b` < … < `1` < `2`), so when two
+plans touch the same file, the lower number goes first, and a contract
+plan never waits for a build plan.
 
 Where two build plans would share something, first try moving the
 shared part into a contract plan. A build plan starts after another
 build plan only when it needs that plan's finished work.
 
-**Commits.** A plan starts from a commit that contains every plan it
-starts after. Each contract plan's builder commits it at the end — its
-code, not the plan files. Your human partner merges those commits when
-a plan starts after several, and commits a build plan before any plan
-that starts after it. Each plan runs in its own branch or worktree,
-which your human partner sets up.
+**Plans never mention git.** A plan starts from a commit that contains
+every plan it starts after. Committing and merging finished plans
+happens outside the build, and someone else sees to it: no plan tells
+its builder anything about staging, committing, branches or merging.
 
-Those are the only commits builders make. Otherwise builders leave git
-alone: no staging, no commits, unless the work cannot go on without
-one. Staging and committing are your human partner's job.
+**One worktree per plan.** Every plan runs in its own worktree, which
+your human partner sets up, so no builder sees another's unfinished
+work. Two builders never share a working folder, even when their plans
+touch different files.
 
 ## 4. Split the work
 
@@ -143,14 +143,17 @@ Every split keeps these:
 - **Parallel plans share no file.** Two plans may touch the same file
   only when one starts after the other, directly or through others —
   a build plan filling a stub its contract plan created, for example.
-- **Parallel plans share no project either.** A project is source code
+  A project's manifest, lockfile and module index are files too: two
+  plans that both add a dependency or a module to one project share
+  them.
+- **Split along projects where you can.** A project is source code
   that builds into one library or executable, or, for an interpreted
   language, deploys as one service — a .NET project, a Cargo crate, an
-  npm package, a Go module, a Python service. Plans that can run at the
-  same time never touch the same project, even in different files: they
-  share its project file, lockfile and build, and one builder's
-  half-finished work breaks the other's compile. One plan may touch
-  several projects.
+  npm package, a Go module, a Python service. Plans in different
+  projects are the cleanest split. Plans inside one project may still
+  run at the same time when they share no file: each builder works in
+  its own worktree, so neither sees the other's half-finished code. One
+  plan may touch several projects.
 - **Independent.** Each plan can be finished, with the build and every
   test passing, using only the plans it starts after and its own files.
   Code from a plan it starts after, directly or through others, it uses
@@ -161,9 +164,9 @@ Every split keeps these:
   that change that code project. Where tests live inside the code
   project (Go test files, Rust test modules), there is nothing to
   create. When the solution has one test project shared by several code
-  projects, parallel plans never share it. The contract plans create a
-  test project for each code project the build touches, empty and
-  building, and add it to the solution; new tests go there. They also
+  projects, the contract plans create a test project for each code
+  project the build touches, empty and building, and add it to the
+  solution; new tests go there. They also
   move, unchanged, the shared project's tests that the work needs —
   tests of behavior a plan changes, or that a plan must update — into
   the new test project for their code project; they belong there
@@ -212,7 +215,7 @@ Each build plan contains, in order:
    one sentence, and **Starts after** — the plans it starts after, by
    number, or "none".
 2. **How to work** — this text, word for word:
-   > Work alone until this plan is done. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Leave nothing broken: when this plan is done, the build and every test pass. Leave git alone: don't stage or commit unless the work cannot go on without it; your human partner commits your work. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner.
+   > Work alone until this plan is done. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Give every test run a time limit — 120 seconds unless the project says otherwise — and treat a run that hits it as a failure to fix, not a reason to wait longer. Leave nothing broken: when this plan is done, the build and every test pass. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
 3. **Before you start** — only when section 5 gives this plan steps.
 4. **Files you own** — every file this plan creates or changes, grouped
    by project.
@@ -225,20 +228,17 @@ Each build plan contains, in order:
 6. **Done when** — the commands that must pass, from the project
    instruction file.
 
-A contract plan has the same parts, with two changes: How to work
-replaces the "Leave git alone" sentence with "When this plan is done,
-commit its code, not the plan files: the plans that start after it
-start from that commit."; and the **contract** comes in full before the
-tasks. Its **Files you own** lists every file it creates, changes or
-moves.
+A contract plan has the same parts, and the **contract** comes in full
+before the tasks. Its **Files you own** lists every file it creates,
+changes or moves.
 
 ## 7. Self-review
 
 1. **Coverage:** every requirement and design section has a task; every
    test-case ID appears under Enables in some plan.
-2. **Parallel plans share nothing:** take every pair of plans where
+2. **Parallel plans share no file:** take every pair of plans where
    neither reaches the other through Starts after — contract or build;
-   their Files you own lists have no file and no project in common.
+   their Files you own lists have no file in common.
 3. **Independence:** no task needs anything from a plan its plan does
    not start after, directly or through others.
 4. **Contract:** every name a task uses from a plan its plan does not
@@ -254,8 +254,7 @@ moves.
 9. **No design decisions:** every behavior traces to the design doc.
 10. **No placeholders:** no "TBD", "handle errors appropriately",
     "similar to task N".
-11. **Git:** only contract plans tell their builder to commit; no task
-    in a build plan stages or commits.
+11. **Git:** no plan, contract or build, mentions git.
 
 Fix issues inline.
 
@@ -268,7 +267,7 @@ an arrow into it is done. Render the diagram with the `show_widget`
 tool when your harness has one (read its `read_me` first); otherwise
 put a PlantUML block in chat. Then say:
 
-> "Plans written: `<every plan's path>`. The diagram shows the start order: a plan can start once every plan with an arrow into it is done. Start each plan, one builder each, in its own branch or worktree, from a commit that contains the plans it starts after. Contract plans commit themselves when done; commit a build plan yourself before starting a plan that starts after it. Merge a plan after the plans it starts after; plans that ran at the same time merge in any order. The plans are temporary: delete them once the build is merged. Please review them."
+> "Plans written: `<every plan's path>`. The diagram shows the start order: a plan can start once every plan with an arrow into it is done. Start each plan, one builder each, in its own worktree, from a commit that contains the plans it starts after. Merge a plan after the plans it starts after; plans that ran at the same time merge in any order. The plans are temporary: delete them once the build is merged. Please review them."
 
 When fewer plans can run at the same time than the builder count, add
 the reason.
@@ -286,14 +285,14 @@ stop. Building starts when your human partner starts the builders.
 | Splitting more ways to keep every builder busy | Quality before parallelism: fewer plans beat a broken one |
 | Every build plan waits for all contract plans | A plan starts after only the plans it builds on |
 | Two contract plans both edit the solution file and run side by side | The higher-numbered one starts after the other, or they become one plan |
-| A plan tells the builder to commit after each task | Builders leave staging and commits to your human partner; only contract plans end with a commit |
+| A plan says anything about git — "commit when done", "don't commit" | Plans never mention git; committing happens outside the build |
 | Two parallel plans each add a line to the same registration file | That edit is a hotspot: it goes in one contract plan both start after |
 | A task waits for a service a parallel plan writes | Put its interface in a contract plan; test against a fake |
 | Faking code from a plan this plan starts after | That code exists: use it as it is |
 | A final "integration" or "end-to-end" task in a builder plan | Cross-builder checks are the design doc's test cases, run by your human partner |
 | A plan carries a task's whole implementation | Builders write and verify most of the code; show code only where it is clearer than words |
 | Writing plans in AsciiDoc to match the design doc, or copying its diagrams | Plans are Markdown with no diagrams; point to the design doc section |
-| Two parallel plans in one project because their files differ | Different files still share one build; they are one plan, or one starts after the other |
+| Refusing to split work inside one project | Plans in one project can run side by side when they share no file; its manifest, lockfile and module index count as files |
 | Every plan adds tests to the solution's one shared test project | The contract plans create one test project per code project |
 | Moving all of a project's tests out of the shared test project | Move only the tests the work needs |
 | A plan resolves something the design left open | Ask your human partner, write the answer into the design doc, then plan |

@@ -25,7 +25,7 @@ If you haven't run the verification command in this message, you cannot claim it
 BEFORE claiming any status or expressing satisfaction:
 
 1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
+2. RUN: Execute the FULL command (fresh, complete), with a time limit
 3. READ: Full output, check exit code, count failures
 4. VERIFY: Does output confirm the claim?
    - If NO: State actual status with evidence
@@ -35,11 +35,13 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
+**Every test run has a time limit.** Set it on the command — the runner's own timeout option, or the timeout of the tool you run it with: 120 seconds, unless the project instructions give another limit or the suite is known to take longer. A run that hits the limit has failed; it is not evidence of anything passing. Find the test that hangs and fix it; don't wait longer.
+
 ## Common Failures
 
 | Claim | Requires | Not Sufficient |
 |-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
+| Tests pass | Test command output: 0 failures, finished inside its time limit | Previous run, "should pass", a run still going or cut off |
 | Linter clean | Linter output: 0 errors | Partial check, extrapolation |
 | Build succeeds | Build command: exit 0 | Linter passing, logs look good |
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |

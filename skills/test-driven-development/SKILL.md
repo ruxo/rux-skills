@@ -195,6 +195,15 @@ Keep tests green. Don't add behavior.
 
 Next failing test for next feature.
 
+## Every Test Run Has a Time Limit
+
+Never start a test run that can wait forever. A hung run stops all work until someone notices.
+
+- **Set a limit on every run** — the runner's own timeout option, or the timeout of the tool you run the command with. Use 120 seconds, unless the project instructions give another limit or the suite is known to take longer; then set a limit that fits it.
+- **Run once and exit** — no watch mode, nothing that waits for input.
+- **A run that hits the limit has failed.** Don't run it again with a longer limit and hope. Find the test that hangs by running smaller groups, then fix the test or the code.
+- **A test that waits for something** — an event, a reply, a file — gives that wait its own timeout, so it fails instead of hanging.
+
 ## Good Tests
 
 | Quality | Good | Bad |
@@ -289,6 +298,7 @@ Before marking work complete:
 - [ ] Each test failed for expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
 - [ ] All tests pass
+- [ ] Every test run had a time limit, and none hit it
 - [ ] Output pristine (no errors, warnings)
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and errors covered
@@ -303,6 +313,7 @@ Can't check all boxes? You skipped TDD. Start over.
 | Test too complicated | Design too complicated. Simplify interface. |
 | Must mock everything | Code too coupled. Use dependency injection. |
 | Test setup huge | Extract helpers. Still complex? Simplify design. |
+| Test run hangs | It hit the time limit, so it failed. Find the hanging test and fix it; don't raise the limit. |
 
 ## Debugging Integration
 
