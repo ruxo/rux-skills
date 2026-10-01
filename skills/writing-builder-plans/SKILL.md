@@ -119,15 +119,14 @@ Where two build plans would share something, first try moving the
 shared part into a contract plan. A build plan starts after another
 build plan only when it needs that plan's finished work.
 
-**Plans never mention git.** A plan starts from a commit that contains
-every plan it starts after. Committing and merging finished plans
-happens outside the build, and someone else sees to it: no plan tells
-its builder anything about staging, committing, branches or merging.
-
-**One worktree per plan.** Every plan runs in its own worktree, which
-your human partner sets up, so no builder sees another's unfinished
-work. Two builders never share a working folder, even when their plans
-touch different files.
+**Git is your human partner's.** Staging, committing, merging and
+worktrees are all theirs; builders never touch git. A plan starts from
+a commit that contains every plan it starts after, and runs in its own
+worktree, so no builder sees another's unfinished work: two builders
+never share a working folder, even when their plans touch different
+files. Your human partner sets all of that up. How to work tells the
+builder to change nothing in git, and that is all a plan says about
+git.
 
 ## 4. Split the work
 
@@ -166,11 +165,10 @@ Every split keeps these:
   create. When the solution has one test project shared by several code
   projects, the contract plans create a test project for each code
   project the build touches, empty and building, and add it to the
-  solution; new tests go there. They also
-  move, unchanged, the shared project's tests that the work needs —
-  tests of behavior a plan changes, or that a plan must update — into
-  the new test project for their code project; they belong there
-  anyway. A helper that tests left behind still use stays put, and the
+  solution; new tests go there. They also move, unchanged, the shared
+  project's tests that the work needs — tests of behavior a plan
+  changes, or that a plan must update — into the new test project for
+  their code project; they belong there anyway. A helper that tests left behind still use stays put, and the
   new test project references it. Every other test stays where it is:
   this is not a test migration.
 - **Cohesive.** Split along the contract — API, dashboard, background
@@ -215,7 +213,7 @@ Each build plan contains, in order:
    one sentence, and **Starts after** — the plans it starts after, by
    number, or "none".
 2. **How to work** — this text, word for word:
-   > Work alone until this plan is done. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Give every test run a time limit — 120 seconds unless the project says otherwise — and treat a run that hits it as a failure to fix, not a reason to wait longer. Leave nothing broken: when this plan is done, the build and every test pass. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
+   > Work alone until this plan is done. Git is your human partner's: read it if you need to, change nothing in it. Work in the folder you were started in. Build every task test-first — REQUIRED SUB-SKILL: Use rux-skills:test-driven-development. Before calling a task done, use rux-skills:verification-before-completion. Give every test run a time limit — 120 seconds, unless the project says otherwise or the suite is known to take longer — and treat a run that hits it as a failure to fix, not a reason to wait longer. Leave nothing broken: when this plan is done, the build and every test pass. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
 3. **Before you start** — only when section 5 gives this plan steps.
 4. **Files you own** — every file this plan creates or changes, grouped
    by project.
@@ -254,7 +252,8 @@ changes or moves.
 9. **No design decisions:** every behavior traces to the design doc.
 10. **No placeholders:** no "TBD", "handle errors appropriately",
     "similar to task N".
-11. **Git:** no plan, contract or build, mentions git.
+11. **Git:** outside the How to work text, no plan, contract or build,
+    mentions git.
 
 Fix issues inline.
 
@@ -285,7 +284,7 @@ stop. Building starts when your human partner starts the builders.
 | Splitting more ways to keep every builder busy | Quality before parallelism: fewer plans beat a broken one |
 | Every build plan waits for all contract plans | A plan starts after only the plans it builds on |
 | Two contract plans both edit the solution file and run side by side | The higher-numbered one starts after the other, or they become one plan |
-| A plan says anything about git — "commit when done", "don't commit" | Plans never mention git; committing happens outside the build |
+| A plan tells the builder to commit, stage, or make a worktree or branch | Git is your human partner's; a plan says only "change nothing in it", in How to work |
 | Two parallel plans each add a line to the same registration file | That edit is a hotspot: it goes in one contract plan both start after |
 | A task waits for a service a parallel plan writes | Put its interface in a contract plan; test against a fake |
 | Faking code from a plan this plan starts after | That code exists: use it as it is |
