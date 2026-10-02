@@ -228,9 +228,9 @@ If you catch yourself thinking:
 
 **ALL of these mean: STOP. Return to Phase 1.**
 
-**If 3+ fixes failed:** Question the architecture (see Phase 4.5)
+**If 3+ fixes failed:** Question the architecture (see Phase 4, step 5)
 
-## your human partner's Signals You're Doing It Wrong
+## Your Human Partner's Signals You're Doing It Wrong
 
 **Watch for these redirections:**
 - "Is that not happening?" - You assumed without verifying

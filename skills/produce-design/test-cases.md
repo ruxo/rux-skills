@@ -1,8 +1,8 @@
 # Test Cases
 
 High-level UAT, E2E and SIT cases that your human partner runs after the
-build. No unit tests, no test code: builders choose their own unit tests
-to make these cases pass.
+build. No unit tests, no test code: the builder plans pin the behaviors
+each task's unit tests cover, and the builders write those tests.
 
 ## Sort behaviors into levels
 

@@ -218,6 +218,9 @@ Use words an agent would search for:
 - getting-started workflows: <150 words each
 - Frequently-loaded skills: <200 words total
 - Other skills: <500 words (still be concise)
+- Workflow skills that run a whole task from start to hand-off
+  (produce-design, writing-builder-plans) are loaded once for a long
+  task and run longer; still cut anything the agent does not act on
 
 **Techniques:**
 
@@ -398,7 +401,7 @@ Different skill types need different test approaches:
 
 ### Discipline-Enforcing Skills (rules/requirements)
 
-**Examples:** TDD, verification-before-completion, designing-before-coding
+**Examples:** verification-before-completion, produce-design, systematic-debugging
 
 **Test with:**
 - Academic questions: Do they understand the rules?

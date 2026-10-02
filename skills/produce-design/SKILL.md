@@ -153,6 +153,8 @@ digraph produce_design {
     "Present short design in chat" -> "Human approves?";
     "Human approves?" -> "Investigate; report recommendation" [label="spike: yes"];
     "Human approves?" -> "Confirm approved design; stop" [label="bounded: yes"];
+    "Ask clarifying questions (bounded)" -> "Hidden complexity? Upgrade path" [label="scope grows"];
+    "Present short design in chat" -> "Hidden complexity? Upgrade path" [label="scope grows"];
     "Hidden complexity? Upgrade path" -> "Classify: spike / bounded / architectural";
     "Explore project context" -> "Mock up the UI, if any";
     "Mock up the UI, if any" -> "Ask clarifying questions";
@@ -257,6 +259,14 @@ This is the rule every design decision starts from, on every path.
 - Smaller, well-bounded units are also easier for you to work with: you
   reason better about code you can hold in context at once. A file that
   grows large is often doing too much.
+- Builders work in a functional style: data as values, logic as
+  functions, state passed along rather than kept global. Side effects
+  are allowed, used sparingly, not forbidden: a design need not route
+  every write through a pure core, and a mutable variable is fine
+  where it eases memory allocation pressure. Where the design needs a
+  global that changes at run time, name it in the section it belongs
+  to and say why; builders keep one global only where the design doc
+  puts it.
 
 Other principles or non-functional requirements (for example,
 simplicity or performance) can outweigh it, but only as a named
