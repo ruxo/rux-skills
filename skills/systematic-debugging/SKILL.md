@@ -174,7 +174,7 @@ You MUST complete each phase before proceeding to the next.
    - Automated test if possible
    - One-off test script if no framework
    - MUST have before fixing
-   - Use the `rux-skills:test-driven-development` skill for writing proper failing tests
+   - Run it and watch it fail the way the reported issue fails — a test that never failed cannot show the fix works
 
 2. **Implement Single Fix**
    - Address the root cause identified

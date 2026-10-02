@@ -1,7 +1,7 @@
 {
   "name": "rux-skills",
-  "description": "Design, test-case, TDD, debugging, and verification skills for coding agents",
-  "version": "0.3.11",
+  "description": "Design, test-case, debugging, and verification skills for coding agents",
+  "version": "0.3.13",
   "author": {
     "name": "Ruxo Zheng"
   },
@@ -9,7 +9,7 @@
   "keywords": [
     "skills",
     "design",
-    "tdd",
+    "testing",
     "debugging",
     "code-review"
   ]

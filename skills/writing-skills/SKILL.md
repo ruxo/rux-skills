@@ -17,9 +17,7 @@ You write test cases (scenarios that tempt the failure), walk through how an age
 
 **Never use subagents to test skills.** All testing is walkthrough in your own session. Report every skill change as walkthrough-checked, not run-tested.
 
-**REQUIRED BACKGROUND:** You MUST understand rux-skills:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
-
-**Official guidance:** For Anthropic's official skill authoring best practices, see anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the TDD-focused approach in this skill.
+**Official guidance:** For Anthropic's official skill authoring best practices, see anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the test-first approach in this skill: baseline walkthrough before writing, compliance walkthrough after.
 
 ## What is a Skill?
 
@@ -282,10 +280,10 @@ wc -w skills/path/SKILL.md
 **When writing documentation that references other skills:**
 
 Use skill name only, with explicit requirement markers:
-- ✅ Good: `**REQUIRED SUB-SKILL:** Use rux-skills:test-driven-development`
+- ✅ Good: `**REQUIRED SUB-SKILL:** Use rux-skills:verification-before-completion`
 - ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand rux-skills:systematic-debugging`
-- ❌ Bad: `See skills/testing/test-driven-development` (unclear if required)
-- ❌ Bad: `@skills/testing/test-driven-development/SKILL.md` (force-loads, burns context)
+- ❌ Bad: `See skills/verification-before-completion` (unclear if required)
+- ❌ Bad: `@skills/verification-before-completion/SKILL.md` (force-loads, burns context)
 
 **Why no @ links:** `@` syntax force-loads files immediately, consuming 200k+ context before you need them.
 
@@ -392,7 +390,7 @@ Edit skill without testing? Same violation.
 - Don't "adapt" while walking through tests
 - Delete means delete
 
-**REQUIRED BACKGROUND:** The rux-skills:test-driven-development skill explains why this matters. Same principles apply to documentation.
+**Why:** a test you never saw fail cannot show the change prevents anything. The baseline walkthrough is what proves the change is needed; the walkthrough with it is what proves it works.
 
 ## Testing All Skill Types
 

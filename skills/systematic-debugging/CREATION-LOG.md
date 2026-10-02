@@ -86,6 +86,10 @@ Created 4 validation scenarios:
 - Note explaining TDD's "simplest code" ≠ debugging's "root cause"
 - Prevents confusion between methodologies
 
+### Enhancement 2: TDD skill removed (2026-10-03)
+- The test-driven-development skill left the plugin
+- Phase 4 step 1 now states the red-first rule inline: run the test and watch it fail before fixing
+
 ## Final Outcome
 
 Bulletproof skill that:
