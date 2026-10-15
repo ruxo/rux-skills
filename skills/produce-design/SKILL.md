@@ -1,6 +1,6 @@
 ---
 name: produce-design
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: "Use when about to create a feature, build a component, add functionality or modify behavior - before any implementation, however small the change looks."
 ---
 
 # Producing Designs
@@ -15,9 +15,13 @@ design, and get your human partner's approval.
 Do NOT invoke any implementation skill, write any code, scaffold any
 project, or take any implementation action until you have told your
 human partner what you intend and they have approved it. This applies
-to EVERY task on EVERY path below — the ceremony scales with the task;
-the approval gate never does. Approval ends this skill; it does not
-start implementation (see Where produce-design ends).
+to EVERY path below; the ceremony scales with the task, the approval
+gate never does.
+
+For a spike, approval authorizes the proposed investigation, including
+throwaway code. Investigate, report findings, then stop. For bounded
+and architectural work, approval of the final design ends this skill;
+it does not start implementation (see Where produce-design ends).
 </HARD-GATE>
 
 ## Three Paths
@@ -53,9 +57,9 @@ stop, say so, and step up. Nothing downgrades mid-task.
 
 ## Anti-Pattern: "Too Simple To Need Approval"
 
-Every path ends with your human partner approving your intent before
-implementation. A todo list, a single-function utility, a config
-change — the design may be two sentences in chat, but you MUST present
+Every path requires your human partner to approve your intent before
+implementation or spike code. A todo list, a single-function utility,
+a config change — the design may be two sentences in chat, but you MUST present
 it and get approval. "Simple" tasks are where unexamined assumptions
 cause the most wasted work. What scales with simplicity is the
 artifact, never the approval.
@@ -84,7 +88,7 @@ artifact, never the approval.
 | "I'll mock up the UI once the architecture is settled" | The mockup comes first: its flows tell you what the architecture must serve. |
 | "I'll draw the mockup myself" | A designer agent draws it from your script; your human partner runs it. |
 | "The design sections are approved, so I'll write the document" | Test cases come next, and they are an approval gate of their own. |
-| "I'll leave this gap in the document for the builders to settle" | Builders work apart and would settle it differently. Ask your human partner now. |
+| "I'll leave this design gap for the builder to settle" | Observable behavior, contracts and scope belong in the approved design. Settle the gap in its section. |
 | "A complete design shows every diagram type" | Each conditional section appears only when its condition holds (design-doc.md). |
 
 ## Checklist
@@ -103,73 +107,85 @@ your path and complete them in order.
 1. **Explore project context** — check files, docs, recent commits
 2. **Mock up the UI** — if the change has a UI part: write the mockup script and get the mockup approved before any other design work (see UI mockups)
 3. **Ask clarifying questions** — one at a time, the ones that matter
-4. **Present short design in chat** — approach, files touched, testing; the approved mockup; a sequence diagram for any flow it changes (see Showing flows)
+4. **Present short design in chat** — purpose and scope, behavior and constraints, approach, files touched, testing; the approved mockup, if any; a sequence diagram for any flow it changes (see Showing flows)
 5. **Get approval** — STOP and wait for an explicit yes; presenting the design and starting in the same breath is skipping the gate
-6. **Hand off** — send the hand-off message and stop (see Where produce-design ends)
+6. **Hand off** — send the complete approved short design and stop (see Where produce-design ends)
 
 **Architectural:**
 1. **Explore project context** — check files, docs, recent commits
 2. **Mock up the UI** — if the design has a UI part: write the mockup script and get the mockup approved before any other design work (see UI mockups)
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Settle the approach** — apply the design principle first; present the one approach that survives, or a choice table only when several still compete (see Exploring approaches)
+4. **Settle the approach** — apply the design principle first; present the one approach that survives, or a choice table only when several still compete (see Exploring approaches); it stays open until your human partner explicitly approves it (see Closing a section)
 5. **Present design sections** — each section in its own message, in order (see Design sections); each stays open until your human partner explicitly approves it (see Closing a section)
 6. **Present test cases** — UAT, E2E and SIT, one line each, approved like a section (see test-cases.md)
 7. **Write design doc** — save it to disk in the project's design-doc location and format (see After the Design)
 8. **Doc self-review** — quick inline check (see below)
-9. **User reviews written doc** — ask your human partner to review it; once approved, report its path and stop (see Where produce-design ends)
+9. **User reviews written doc** — ask your human partner to review it; once approved, send the hand-off message and stop (see Where produce-design ends)
 
 ## Process Flow
 
 ```dot
 digraph produce_design {
     "Classify: spike / bounded / architectural" [shape=diamond];
+    "Explore project context (spike)" [shape=box];
     "Present question + probe (2-3 sentences)" [shape=box];
+    "Human approves probe?" [shape=diamond];
+    "Investigate; report recommendation" [shape=doublecircle];
+    "Explore project context (bounded)" [shape=box];
     "Mock up the UI, if any (bounded)" [shape=box];
     "Ask clarifying questions (bounded)" [shape=box];
     "Present short design in chat" [shape=box];
-    "Human approves?" [shape=diamond];
-    "Investigate; report recommendation" [shape=doublecircle];
-    "Confirm approved design; stop" [shape=doublecircle];
+    "Human approves design?" [shape=diamond];
+    "Hand off design + builder brief; stop" [shape=doublecircle];
     "Explore project context" [shape=box];
     "Mock up the UI, if any" [shape=box];
     "Ask clarifying questions" [shape=box];
     "Settle the approach" [shape=box];
+    "User approves approach?" [shape=diamond];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
     "Present test cases" [shape=box];
     "User approves test cases?" [shape=diamond];
     "Write design doc" [shape=box];
-    "Doc self-review\n(fix inline)" [shape=box];
+    "Doc self-review\n(fix inline; gaps go to partner)" [shape=box];
     "User reviews doc?" [shape=diamond];
-    "Report doc path; stop" [shape=doublecircle];
+    "Hand off doc path + builder brief; stop" [shape=doublecircle];
     "Hidden complexity? Upgrade path" [shape=box];
 
-    "Classify: spike / bounded / architectural" -> "Present question + probe (2-3 sentences)" [label="spike"];
-    "Classify: spike / bounded / architectural" -> "Mock up the UI, if any (bounded)" [label="bounded"];
-    "Mock up the UI, if any (bounded)" -> "Ask clarifying questions (bounded)";
-    "Classify: spike / bounded / architectural" -> "Explore project context" [label="architectural"];
-    "Present question + probe (2-3 sentences)" -> "Human approves?";
+    "Classify: spike / bounded / architectural" -> "Explore project context (spike)" [label="spike"];
+    "Explore project context (spike)" -> "Present question + probe (2-3 sentences)";
+    "Present question + probe (2-3 sentences)" -> "Human approves probe?";
+    "Human approves probe?" -> "Present question + probe (2-3 sentences)" [label="feedback"];
+    "Human approves probe?" -> "Investigate; report recommendation" [label="yes"];
+    "Classify: spike / bounded / architectural" -> "Explore project context (bounded)" [label="bounded"];
+    "Explore project context (bounded)" -> "Mock up the UI, if any (bounded)";
+    "Mock up the UI, if any (bounded)" -> "Mock up the UI, if any (bounded)" [label="feedback: revised script"];
+    "Mock up the UI, if any (bounded)" -> "Ask clarifying questions (bounded)" [label="approved or no UI"];
     "Ask clarifying questions (bounded)" -> "Present short design in chat";
-    "Present short design in chat" -> "Human approves?";
-    "Human approves?" -> "Investigate; report recommendation" [label="spike: yes"];
-    "Human approves?" -> "Confirm approved design; stop" [label="bounded: yes"];
+    "Present short design in chat" -> "Human approves design?";
+    "Human approves design?" -> "Present short design in chat" [label="feedback"];
+    "Human approves design?" -> "Hand off design + builder brief; stop" [label="yes"];
     "Ask clarifying questions (bounded)" -> "Hidden complexity? Upgrade path" [label="scope grows"];
     "Present short design in chat" -> "Hidden complexity? Upgrade path" [label="scope grows"];
     "Hidden complexity? Upgrade path" -> "Classify: spike / bounded / architectural";
+    "Classify: spike / bounded / architectural" -> "Explore project context" [label="architectural"];
     "Explore project context" -> "Mock up the UI, if any";
-    "Mock up the UI, if any" -> "Ask clarifying questions";
+    "Mock up the UI, if any" -> "Mock up the UI, if any" [label="feedback: revised script"];
+    "Mock up the UI, if any" -> "Ask clarifying questions" [label="approved or no UI"];
     "Ask clarifying questions" -> "Settle the approach";
-    "Settle the approach" -> "Present design sections";
+    "Settle the approach" -> "User approves approach?";
+    "User approves approach?" -> "Settle the approach" [label="feedback"];
+    "User approves approach?" -> "Present design sections" [label="yes"];
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
     "User approves design?" -> "Present test cases" [label="yes, all sections"];
     "Present test cases" -> "User approves test cases?";
     "User approves test cases?" -> "Present test cases" [label="no, revise"];
     "User approves test cases?" -> "Write design doc" [label="yes"];
-    "Write design doc" -> "Doc self-review\n(fix inline)";
-    "Doc self-review\n(fix inline)" -> "User reviews doc?";
+    "Write design doc" -> "Doc self-review\n(fix inline; gaps go to partner)";
+    "Doc self-review\n(fix inline; gaps go to partner)" -> "User reviews doc?";
     "User reviews doc?" -> "Write design doc" [label="changes requested"];
-    "User reviews doc?" -> "Report doc path; stop" [label="approved"];
+    "User reviews doc?" -> "Hand off doc path + builder brief; stop" [label="approved"];
 }
 ```
 
@@ -177,20 +193,48 @@ digraph produce_design {
 design; what happens next is your human partner's call.
 
 - Spike: a reported recommendation.
-- Bounded: after the yes, your whole message is:
-  > "Design approved: <the design in one sentence>. Tell me when you want it implemented."
-- Architectural: after the design doc is approved, your whole message is:
-  > "Design doc approved: `<path or issue URL>`. When you want it built, I'll split it into builder plans with rux-skills:writing-builder-plans."
+- Bounded: after the yes, begin with:
+  > "Design approved. Ready to hand to one builder, who owns implementation planning and building."
+  Then reproduce the complete approved short design in that message:
+  purpose and scope, behavior and constraints, approach, files touched,
+  testing, and any approved mockup references and required flow diagrams.
+  Carry forward the approved details so the builder needs no earlier
+  chat history. This is the hand-off artifact; no spec file is needed.
+  End with the builder brief, then stop.
+- Architectural: after the design doc is approved, your whole message is
+  this line followed by the builder brief:
+  > "Design doc approved: `<path or issue URL>`. Ready to hand to one builder, who owns implementation planning and building."
 
-That holds even when the original request was "add X" or "build Y":
-the yes approves the design, and building it is your human partner's
-next request. Implementation starts when they ask for it.
+**Builder brief.** The builder sees only what you hand off, not this
+skill, so the hand-off carries how to build. End it with this block,
+word for word, for your human partner to give the builder together with
+the design:
+
+```text
+Build the approved design you were given. You own the implementation plan, build order and code-level decisions within it; if the design seems wrong or leaves a design decision open, stop and tell your human partner rather than settling it yourself.
+Design and write the tests yourself, with the test pyramid in mind: mostly unit tests, plus a few integration tests where the parts meet, so that they prove the design's requirements, not just that the code runs. Any UAT, E2E or SIT cases in the design are for your human partner to run after the build.
+Think in the functional paradigm: data as values, logic as functions whose result follows from their inputs. Side effects are allowed but used sparingly. A mutable variable is acceptable, and the right choice when it would ease memory allocation pressure. Keep global variables to a minimum; a value that keeps changing at run time is passed along as state, and stays global only where the design puts it there.
+Give every test run a time limit — 120 seconds, unless the project says otherwise or the suite is known to take longer — and treat a run that hits it as a failure to fix, not a reason to wait longer.
+Before calling the work done, use rux-skills:verification-before-completion. Leave nothing broken: when you are done, the build and every test pass.
+```
+
+For a single builder, the approved design and the builder brief are the
+hand-off. The builder owns the implementation plan, build order and
+code-level decisions within that design. If your human partner
+explicitly asks for parallel builders, rux-skills:writing-builder-plans
+is a separate next step, not part of this skill; its plans carry their
+own instructions for builders.
+
+For bounded and architectural work, that holds even when the original
+request was "add X" or "build Y": the yes approves the design, and
+building it is your human partner's next request. Implementation starts
+when they ask for it.
 
 ## The Process
 
-The subsections below serve the bounded and architectural paths (a
-spike stops at "present the probe, get a nod"). Sections from
-**Exploring approaches** onward are architectural-path depth — for
+The subsections below serve the bounded and architectural paths. A
+spike follows its checklist through investigation and recommendation.
+Sections from **Exploring approaches** onward are architectural-path depth — for
 bounded work, context plus the mockup (if it has a UI part) plus a few
 questions plus a short in-chat design is the whole process.
 
@@ -259,7 +303,8 @@ This is the rule every design decision starts from, on every path.
 - Smaller, well-bounded units are also easier for you to work with: you
   reason better about code you can hold in context at once. A file that
   grows large is often doing too much.
-- Builders work in a functional style: data as values, logic as
+- Builders work in a functional style (the builder brief tells them so;
+  see Where produce-design ends): data as values, logic as
   functions, state passed along rather than kept global. Side effects
   are allowed, used sparingly, not forbidden: a design need not route
   every write through a pure core, and a mutable variable is fine
@@ -278,7 +323,8 @@ in the choice table or a line in the design section.
 - Apply the design principle before you show anything. Drop every
   approach it clearly rules out.
 - One approach survives: present it, with a line on what the principle
-  ruled out and why. There is no choice to offer.
+  ruled out and why. There is no choice to offer, but there is still an
+  approval to get: it closes like a section (see Closing a section).
 - Several survive with pros and cons that really compete: show them as
   a choice (see Showing choices).
 - YAGNI ruthlessly - remove unnecessary features from every approach and design
@@ -336,10 +382,12 @@ would not give at least two groups of two or more, the list stays flat
 
 **Design sections (architectural path):**
 
-Present these in order, each in its own message, each with its diagram.
-design-doc.md says what each contains and how to draw it.
+Present these in order, each in its own message. Include the diagrams
+listed for that section in design-doc.md; a section whose Diagram entry
+is a dash needs none of its own. The Showing flows rule still applies
+when a section describes a flow.
 
-1. **Requirements and terms** — always
+1. **Purpose and scope, requirements and terms** — always
 2. **Architecture** — always; component diagram
 3. **Data model** — when stored data or shared types are added or changed; class diagram
 4. **Flows** — always; one sequence diagram per flow (API, data and UI flows)
@@ -348,8 +396,8 @@ design-doc.md says what each contains and how to draw it.
 7. **Error handling** — always
 8. **Telemetry** — when the design crosses a service boundary, adds a background job, or has a failure path someone must diagnose in production
 
-Skip a section whose condition does not hold. When a gap turns up —
-something the design must decide but nobody has — ask your human partner
+Skip a section whose condition does not hold. When a design gap turns up
+(see Design decisions and builder choices), ask your human partner
 before presenting the section it belongs to; a gap for a later section
 waits for that section. A message holds either the section's open
 questions or the section, never both: the section is written from the
@@ -365,6 +413,19 @@ revised section.
 
 After the last section is approved, present the test cases (see
 test-cases.md).
+
+**Design decisions and builder choices:**
+
+A design gap is an unsettled decision about observable behavior,
+permissions, stored data meaning, public or shared contracts, error
+handling, compatibility, scope or a required constraint. Settle these
+through the design process before handoff.
+
+The builder owns internal code structure, private helper names,
+algorithms within the approved constraints, build order, and unit and
+in-process integration tests. Leaving those choices open is not a
+design gap. Where an implementation constraint is necessary to the
+design, state it and its reason in the relevant section.
 
 **Showing flows:**
 
@@ -436,7 +497,20 @@ When the reply is feedback, your next message has these parts, in order:
 
 The next section does not appear in that message. When they answer your question, that answer is feedback too: send parts 1-3 again.
 
-This applies to every approval gate in this skill: the mockup, each design section, the test cases, the bounded path's short design, and the written design doc.
+This applies to every approval gate in this skill: the mockup, the approach, each design section, the test cases, the bounded path's short design, and the written design doc.
+
+**Revising a design decision:**
+
+When a revision affects earlier approved material, identify the affected
+requirements, sections, diagrams and test cases. Use their existing
+approval gates; for section changes presented with test cases, follow
+test-cases.md's combined approval rule.
+
+Once approved, reconcile all affected content in the working design and
+any saved document, including master and part documents of a split
+design. Replace superseded statements rather than leaving contradictory
+addenda. A revised requirement keeps its ID; a new requirement takes
+the next unused ID. Hand off the reconciled design.
 
 **Working in existing codebases:**
 
@@ -455,18 +529,12 @@ Find where design docs go for this project:
 3. If not found, ask your human partner where design docs go for this project.
 4. Record the answer: in your harness's per-project memory if it has one; otherwise add a line to the project instruction file.
 
-**Format.** For a folder, look for a `.obsidian` folder in it or any
-folder above it:
-
-- **Found** — the folder is in an Obsidian vault. Write Obsidian
-  Markdown (`.md`), following template-obsidian.md.
-- **Not found** — write AsciiDoc (`.adoc`), following template.adoc.
-
-Diagrams are PlantUML in both.
+**Format.** A design document in a folder is AsciiDoc (`.adoc`),
+following template.adoc. Diagrams are PlantUML.
 
 **GitHub issue.** When your human partner tells you the design goes to
 a GitHub issue — never offer it yourself — the issue uses Mermaid,
-since GitHub does not render PlantUML. Follow template-obsidian.md's
+since GitHub does not render PlantUML. Follow template.adoc's
 sections in GitHub Markdown: draw each diagram in a ` ```mermaid `
 block (a component diagram becomes a `flowchart`), and write comments
 as `<!-- -->`. Write the body to a file in your scratchpad or temp
@@ -478,15 +546,11 @@ number.
 
 **File name** (folder docs). Every file name starts with today's date, `YYYY-MM-DD-`,
 followed by a name you choose — for example
-`2026-09-27-customer-tags-design.adoc` (`.md` in a vault). The date
+`2026-09-27-customer-tags-design.adoc`. The date
 prefix holds even when other files in the folder are named differently,
-and for each part document of a split design. The extension comes from
-the format.
+and for each part document of a split design.
 
-Then:
-
-- Write the approved design and save it to disk
-- Use elements-of-style:writing-clearly-and-concisely skill if available
+Then write the approved design and save it to disk.
 
 **What the doc contains.** The design doc is the approved design and
 nothing more: the sections of design-doc.md, in its order — purpose and
@@ -503,19 +567,19 @@ the sections of design-doc.md.
 After writing the design doc, look at it with fresh eyes:
 
 1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
-2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
+2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions? Has every approved revision been reconciled across affected requirements, prose, diagrams and test cases, including any split documents?
 3. **Scope check:** Is this focused enough to build as one piece, or does it need decomposition?
-4. **Gap check:** Is anything the builders need left undecided, or could a requirement be read two ways? Ask your human partner and write in their answer; never leave it for the builders.
+4. **Gap check:** Is any design gap left undecided, or could a requirement be read two ways? Do not settle it yourself: ask your human partner, as Design sections asks a section's gaps, then write in their answer. Leave the builder's implementation choices open (see Design decisions and builder choices).
 5. **Diagram check:** Does every flow have a sequence diagram, and every conditional section appear exactly when its condition holds? Are all diagrams PlantUML (Mermaid in a GitHub issue), with boxes coloured only where the design changes — `#LightGreen` new, `#Yellow` changed, `#Salmon` removed — and arrows uncoloured, their changes labelled "(new)", "(changed)", "(removed)"?
 6. **Test-case check:** Does every requirement have a case, and every case cite a requirement? Is each case one line, at one level only? Does any case run inside one process — a builder's unit test in SIT's clothes?
 7. **Section check:** Is every section one of those in design-doc.md? Remove any that is not.
 8. **Principle check:** Does any unit mix unrelated responsibilities, or depend on another unit's internals, data or timing? Fix it, or name the trade-off and why.
 
-Fix any issues inline. No need to re-review — just fix and move on.
+Fix every other issue inline. No need to re-review — just fix and move on.
 
 **User Review Gate:**
 After the self-review passes, ask your human partner to review the written doc before proceeding:
 
 > "Design doc written to `<path>`. Please review it and let me know if you want any changes."
 
-Wait for the response. If they request changes, make them and re-run the self-review. Once they approve, report the doc path — for a GitHub issue, create it and report its URL — and stop (see Where produce-design ends).
+Wait for the response. If they request changes, make them and re-run the self-review. Once they approve — for a GitHub issue, create it first — send the hand-off message with the doc's path or issue URL, and stop (see Where produce-design ends).

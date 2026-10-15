@@ -20,11 +20,11 @@ using them start after.
 when a plan is done, the code builds and every test passes. If the work
 cannot be split without breaking that, write fewer plans — down to one.
 
-Plans say what to build; builders write and verify most of the code,
-test-first. Contracts are given in full. Elsewhere, a plan shows code
-only where it says something more clearly than words — an exact query,
-format or pattern. The rest — the detailed design and its
-implementation — is left to the builders.
+Plans say what to build; builders write and test most of the code, in
+whatever order suits them. Contracts are given in full. Elsewhere, a
+plan shows code only where it says something more clearly than words —
+an exact query, format or pattern. The rest — the detailed design, its
+implementation and its tests — is left to the builders.
 
 **Announce at start:** "I'm using the writing-builder-plans skill to split the design into builder plans."
 
@@ -158,7 +158,7 @@ Every split keeps these:
   Code from a plan it starts after, directly or through others, it uses
   as it is. Anything else it reaches only through a contract's
   interface, with a fake in its tests.
-- **One test project per code project.** Builders test first, so every
+- **One test project per code project.** Builders write tests, so every
   code project gets its own test project, touched only by the plans
   that change that code project. Where tests live inside the code
   project (Go test files, Rust test modules), there is nothing to
@@ -213,15 +213,13 @@ Each build plan contains, in order:
    one sentence, and **Starts after** — the plans it starts after, by
    number, or "none".
 2. **How to work** — this text, word for word:
-   > Work alone until this plan is done. Git is your human partner's: read it if you need to, change nothing in it. Work in the folder you were started in. Build every task test-first: turn each of its Tests pin lines into a test, run it and watch it fail, then write the code that makes it pass — so the tests prove the plan's goal, not just that the code runs. Think in the functional paradigm: data as values, logic as functions whose result follows from their inputs. Side effects are allowed but used sparingly. A mutable variable is acceptable, and the right choice when it would ease memory allocation pressure. Accessing global variables is a side effect and is fine, but keep global variables to a minimum. A transactional variable, one whose value keeps changing at run time, is preferably passed along as state rather than kept global; it stays global only where the design doc puts it there. Before calling a task done, use rux-skills:verification-before-completion. Give every test run a time limit — 120 seconds, unless the project says otherwise or the suite is known to take longer — and treat a run that hits it as a failure to fix, not a reason to wait longer. Leave nothing broken: when this plan is done, the build and every test pass. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
+   > Work alone until this plan is done. Git is your human partner's: read it if you need to, change nothing in it. Work in the folder you were started in. Design and write the tests for this plan yourself, with the test pyramid in mind: mostly unit tests, plus a few integration tests where this plan's parts meet. Write them when and how you see fit — before the code, after it, or alongside — so that they prove the plan's goal, not just that the code runs. Think in the functional paradigm: data as values, logic as functions whose result follows from their inputs. Side effects are allowed but used sparingly. A mutable variable is acceptable, and the right choice when it would ease memory allocation pressure. Accessing global variables is a side effect and is fine, but keep global variables to a minimum. A transactional variable, one whose value keeps changing at run time, is preferably passed along as state rather than kept global; it stays global only where the design doc puts it there. Before calling a task done, use rux-skills:verification-before-completion. Give every test run a time limit — 120 seconds, unless the project says otherwise or the suite is known to take longer — and treat a run that hits it as a failure to fix, not a reason to wait longer. Leave nothing broken: when this plan is done, the build and every test pass. Change only the files under Files you own; if a task seems to need another file, the plan is wrong — stop and tell your human partner. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
 3. **Before you start** — only when section 5 gives this plan steps.
 4. **Files you own** — every file this plan creates or changes, grouped
    by project.
 5. **Tasks**, in build order. Each task has:
    - **Files** — the files it creates or changes
    - **Uses** — the contracts it relies on, by name
-   - **Tests pin** — each behavior as one line, situation → expected
-     result; unit tests, or in-process tests of this plan's own part
    - **Enables** — the design doc's test-case IDs this task helps pass
 6. **Done when** — the commands that must pass, from the project
    instruction file.
@@ -290,6 +288,7 @@ stop. Building starts when your human partner starts the builders.
 | Faking code from a plan this plan starts after | That code exists: use it as it is |
 | A final "integration" or "end-to-end" task in a builder plan | Cross-builder checks are the design doc's test cases, run by your human partner |
 | A plan carries a task's whole implementation | Builders write and verify most of the code; show code only where it is clearer than words |
+| A plan lists the tests a task must have, or how to write them | Builders design their own tests; a task says what to build and which design-doc cases it enables |
 | Writing plans in AsciiDoc to match the design doc, or copying its diagrams | Plans are Markdown with no diagrams; point to the design doc section |
 | Refusing to split work inside one project | Plans in one project can run side by side when they share no file; its manifest, lockfile and module index count as files |
 | Every plan adds tests to the solution's one shared test project | The contract plans create one test project per code project |

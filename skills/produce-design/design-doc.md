@@ -1,12 +1,14 @@
 # Design Document Contents
 
 What each part of an architectural design contains, when it appears, and
-how to draw its diagram. The same parts, in the same order, are the
-design sections you present for approval and the sections of the written
-document.
+how to draw its diagram. These are the sections of the written document,
+in order, and every one is approved before it is written: the approach
+and the UI mockup at their own gates, purpose and scope with
+requirements and terms as the first design section, the rest as design
+sections, and the test cases at their own gate (see SKILL.md).
 
 All diagrams are PlantUML. In chat, put them in a ` ```plantuml ` block;
-in the document, use the block syntax of its format (see the templates).
+in the document, use the AsciiDoc block syntax (see template.adoc).
 In both, colour marks what the design changes — `#LightGreen` new,
 `#Yellow` changed, `#Salmon` removed (see Diagram style in SKILL.md).
 
@@ -155,5 +157,5 @@ The approved UAT, E2E and SIT cases, one line each (see test-cases.md).
 Write one document. When the design covers several subsystems that
 builders will read separately, write a master document plus one part
 document per subsystem: the master holds sections 1–4 and 12 and pulls
-in the parts (AsciiDoc `include::`, Obsidian `![[...]]`); each part holds
+in the parts with AsciiDoc `include::`; each part holds
 sections 5–11 for its subsystem.
