@@ -212,10 +212,11 @@ the design:
 
 ```text
 Build the approved design you were given. You own the implementation plan, build order and code-level decisions within it; if the design seems wrong or leaves a design decision open, stop and tell your human partner rather than settling it yourself.
+Keep a build log beside the design doc, named after it with `-build-log.md` in place of its extension (when the design is a GitHub issue, ask your human partner where it goes). Each time you finish a step, add what is done, the decisions you made within the design and why, what is next, and anything open. A long build gets its context compacted: after a compaction or a new session, read the design and the build log before you continue, and trust them over your memory of earlier work. The log is temporary; your human partner deletes it once the build is merged.
 Design and write the tests yourself, with the test pyramid in mind: mostly unit tests, plus a few integration tests where the parts meet, so that they prove the design's requirements, not just that the code runs. Any UAT, E2E or SIT cases in the design are for your human partner to run after the build.
 Think in the functional paradigm: data as values, logic as functions whose result follows from their inputs. Side effects are allowed but used sparingly. A mutable variable is acceptable, and the right choice when it would ease memory allocation pressure. Keep global variables to a minimum; a value that keeps changing at run time is passed along as state, and stays global only where the design puts it there.
 Give every test run a time limit — 120 seconds, unless the project says otherwise or the suite is known to take longer — and treat a run that hits it as a failure to fix, not a reason to wait longer.
-Before calling the work done, use rux-skills:verification-before-completion. Leave nothing broken: when you are done, the build and every test pass.
+Before calling the work done, use rux-skills:verification-before-completion. Leave nothing broken: when you are done, the build and every test pass. Track your token spend and your time as you go, and report both to your human partner when you are done, with the time split into coding, testing and other. Measure them the simple way, such as noting the clock when you switch from one to another; rough numbers are fine, and say which ones are estimates.
 ```
 
 For a single builder, the approved design and the builder brief are the
