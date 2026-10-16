@@ -220,10 +220,7 @@ Before calling the work done, use rux-skills:verification-before-completion. Lea
 
 For a single builder, the approved design and the builder brief are the
 hand-off. The builder owns the implementation plan, build order and
-code-level decisions within that design. If your human partner
-explicitly asks for parallel builders, rux-skills:writing-builder-plans
-is a separate next step, not part of this skill; its plans carry their
-own instructions for builders.
+code-level decisions within that design.
 
 For bounded and architectural work, that holds even when the original
 request was "add X" or "build Y": the yes approves the design, and
